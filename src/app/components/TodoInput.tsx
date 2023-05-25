@@ -12,7 +12,6 @@ const TodoInput: React.FC = () => {
     dispatch(
       todoActions.updateTodoData({
         addTodo: value.inputTodo,
-      
       })
     );
     dispatch(todoActions.clearInputTodo(""));
@@ -22,7 +21,6 @@ const TodoInput: React.FC = () => {
     <Formik initialValues={todoInput} onSubmit={submit_Todo} enableReinitialize>
       {(todoValue) => {
         const { values, setValues } = todoValue;
-
         return (
           <Form>
             <div className="text-center mb-4 flex justify-center">

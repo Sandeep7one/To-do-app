@@ -3,11 +3,13 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 interface stateTypes {
   inputTodo: string;
   todoData: any;
+  filter: string;
 }
 
 const initialState: stateTypes = {
   inputTodo: "",
   todoData: [],
+  filter: "all",
 };
 
 const todoSlice = createSlice({
@@ -23,12 +25,27 @@ const todoSlice = createSlice({
     updateTodoData: (state, action) => {
       state.todoData.push({
         addTodo: action.payload.addTodo,
-        checkBox: false,
+        isChecked: false,
         id: Date.now(),
+        active: "active",
       });
     },
-    updateCheckBox: (state, action) => {
-      const newId = action.payload.id;
+    isCheckedHandler: (state, action) => {
+      const isCheckedTodo = state.todoData.find(
+        (todo: any) => todo.id === action.payload.id
+      );
+
+      if (isCheckedTodo) {
+        isCheckedTodo.isChecked = !isCheckedTodo.isChecked;
+        isCheckedTodo.active = !isCheckedTodo.active;
+      } else {
+        isCheckedTodo.isChecked = isCheckedTodo.isChecked;
+        isCheckedTodo.inactive = isCheckedTodo.active;
+      }
+    },
+
+    filterActivity: (state, action) => {
+      state.filter = action.payload.type;
     },
   },
 });
