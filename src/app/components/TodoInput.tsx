@@ -3,8 +3,14 @@ import { Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { todoActions } from "../store/todo-Slice";
 import { RootState } from "../store/index";
+import * as Yup from "yup";
+
+const SignUpSchema = Yup.object().shape({
+  inputTodo: Yup.string().required("New Activity in Todo - is Required ! "),
+});
 
 const TodoInput: React.FC = () => {
+  
   const todoInput = useSelector((state: RootState) => state.todo);
   const dispatch = useDispatch();
 
@@ -18,12 +24,12 @@ const TodoInput: React.FC = () => {
   };
 
   return (
-    <Formik initialValues={todoInput} onSubmit={submit_Todo} enableReinitialize>
+    <Formik initialValues={todoInput} onSubmit={submit_Todo} validationSchema={SignUpSchema} enableReinitialize>
       {(todoValue) => {
-        const { values, setValues } = todoValue;
+        const { values, setValues , errors} = todoValue;
         return (
           <Form>
-            <div className="text-center mb-4 flex justify-center">
+            <div className="text-center mb-0 flex justify-center">
               <input
                 type="text"
                 name="todo"
@@ -37,6 +43,7 @@ const TodoInput: React.FC = () => {
                 }}
               />
             </div>
+            <p className="ml-[4.5rem] mt-0 text-red-500">{errors.inputTodo}</p>
           </Form>
         );
       }}
