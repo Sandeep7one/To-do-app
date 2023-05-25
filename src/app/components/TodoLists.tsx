@@ -1,22 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import Todo_Activity from "./Todo_Activity";
 import { todoActions } from "../store/todo-Slice";
 
 const TodoLists: React.FC = () => {
-  
+  const [isActive, setActive] = useState("all");
   const todoDatas = useSelector((state: RootState) => {
     if (state.todo.filter === "all") {
       return state.todo.todoData;
     } else if (state.todo.filter === "active") {
-      return state.todo.todoData.filter(
-        (todo: any) => todo.active === "active"
-      );
+      return state.todo.todoData.filter((todo: any) => todo.active);
     } else if (state.todo.filter === "complete") {
       return state.todo.todoData.filter((todo: any) => !todo.active);
     }
-  }) as [{ addTodo: string; isChecked: boolean; id: number; active: string }];
+  });
 
   const dispatch = useDispatch();
 
@@ -32,16 +30,27 @@ const TodoLists: React.FC = () => {
     }
   };
 
-  const countAllToDo = todoDatas.length as number;
-  const activeTodo = todoDatas.filter((todo: any) => todo.active).length as number;
-  const completed = todoDatas.filter((todo: any) => !todo.active).length as number;
+  const allCount = todoDatas.length;
+  const activeCount = todoDatas.filter((todo: any) => todo.active).length;
+  const activeCompleted = todoDatas.filter((todo: any) => !todo.active).length;
+
+  const activeHandler = () => {
+    switch (isActive) {
+      case "all":
+        return allCount;
+      case "active":
+        return activeCount;
+      case "complete":
+        return activeCompleted;
+    }
+  };
 
   return (
     <>
       {todoDatas?.map((todo: any) => {
         return (
-          <ul className="text-center m-2">
-            <li className="flex ml-[4.5rem] mr-[4.5rem]" key={todo.id}>
+          <ul className="text-center m-2" key={todo.id}>
+            <li className="flex ml-[4.5rem] mr-[4.5rem]">
               <input
                 type="checkbox"
                 className="block h-[1.5rem] w-[1.5rem] rounded-md  border-gray-500 "
@@ -59,9 +68,8 @@ const TodoLists: React.FC = () => {
       <hr className="mt-4 ml-[1.5rem] mr-[1.5rem] " />
       <Todo_Activity
         dataLists={todoDatas}
-        countAllToDo={countAllToDo}
-        activeTodo={activeTodo}
-        completed={completed}
+        activeHandler={activeHandler}
+        setActive={setActive}
       />
     </>
   );
